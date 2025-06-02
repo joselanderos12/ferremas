@@ -1,35 +1,13 @@
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import render, redirect,get_object_or_404
+from .models import Producto
+import json
 
 # Create your views here.
 
 def home(request): 
     context={}
     return render(request,'web/home.html', context)
-
-
-def catalogo(request):
-    productos = [
-        {
-            'nombre': 'Taladro Inalámbrico Bosch',
-            'imagen': 'web/media/2.png',
-            'precio': 89990,
-            'descripcion': 'Potente taladro inalámbrico de 18V ideal para trabajos pesados.'
-        },
-        {
-            'nombre': 'Juego de Llaves Allen',
-            'imagen': 'web/media/5.png',
-            'precio': 12990,
-            'descripcion': 'Set de llaves Allen de acero reforzado.'
-        },
-        {
-            'nombre': 'Pintura Látex Interior 1 Galón',
-            'imagen': 'web/media/6.png',
-            'precio': 21990,
-            'descripcion': 'Pintura blanca de alta cobertura para interiores.'
-        }
-    ]
-    return render(request, 'web/catalogo.html', {'productos': productos})
-
 
 def login(request):
     return render(request, 'web/login.html')
@@ -42,4 +20,82 @@ def registro(request):
     return render(request, 'web/registro.html')
 
 def carrito(request):
-    return render(request, 'web/carrito.html')
+    productos= Producto.objects.all()
+    context= {'productos':productos}
+    return render(request, 'web/carrito.html', context)
+
+
+
+def catalogo(request):
+    return render(request, 'web/catalogo.html')
+
+def agregar_producto(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        descripcion = request.POST.get('descripcion')
+        precio = request.POST.get('precio')
+        imagen_url = request.POST.get('imagen_url')
+        
+        producto = Producto(nombre=nombre, descripcion=descripcion, precio=precio, imagen_url=imagen_url)
+        producto.save()
+        
+        return redirect('catalogo')
+    return render(request, 'web/catalogo.html', {'mensaje': 'Producto agregado correctamente.'})  
+
+
+def producto_del(request, pk):
+    context = {}
+    try:
+        producto = Producto.objects.get(id=pk)
+        producto.delete()
+
+        mensaje = "Producto eliminado correctamente"
+        productos = Producto.objects.all()
+        context = {'productos': productos, 'mensaje': mensaje}
+    except Producto.DoesNotExist:
+        mensaje = "El producto no existe"
+        productos = Producto.objects.all()
+        context = {'productos': productos, 'mensaje': mensaje}
+    except Exception as e:
+        mensaje = f"Error al eliminar el producto: {str(e)}"
+        productos = Producto.objects.all()
+        context = {'productos': productos, 'mensaje': mensaje}
+
+    return render(request, 'web/carrito.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+#APIs:
+#def api_productos(request):
+    productos = Producto.objects.all()
+    data = [{
+        'id': p.id,
+        'nombre': p.nombre,
+        'descripcion': p.descripcion,
+        'precio': p.precio,
+        'stock': p.stock
+    } for p in productos]
+    return JsonResponse(data, safe=False)
+
+
+#@csrf_exempt
+#def api_usuarios(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        # Crear usuario
+        usuario = Usuario.objects.create(**data)
+        return JsonResponse({'success': True})
+
+    usuarios = Usuario.objects.all()
+    data = [{'id': u.id, 'nombre': u.nombre, 'correo': u.correo} for u in usuarios]
+    return JsonResponse(data, safe=False)

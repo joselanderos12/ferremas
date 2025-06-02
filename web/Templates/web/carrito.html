@@ -10,7 +10,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="{% static 'web/css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'web/css/style.css' %}">
  
 </head>
 <body>
@@ -42,73 +42,86 @@
   </div>
 </nav>
 
- <!-- CONTENIDO -->
-<div class="container mt-5">
-  <h2 class="mb-4">🛒 Carrito de Compras</h2>
+<!-- CONTENIDO -->
+<div class="container">
+  <h1 class="mt-4">Tus Productos</h1>
 
   <div class="row">
+    <!-- Lista de productos -->
     <div class="col-md-8">
-      <div class="card mb-3">
-        <div class="row g-0 align-items-center">
-          <div class="col-md-3">
-            <img src="{% static 'web/media/2.png' %}" class="img-fluid rounded-start" alt="Taladro">
-          </div>
-          <div class="col-md-9">
-            <div class="card-body">
-              <h5 class="card-title">Taladro Inalámbrico Bosch</h5>
-              <p class="card-text">Precio unitario: $89.990</p>
-              <div class="d-flex align-items-center">
-                <label class="me-2">Cantidad:</label>
-                <button class="btn btn-sm btn-outline-secondary me-1">-</button>
-                <span class="me-1">1</span>
-                <button class="btn btn-sm btn-outline-secondary me-3">+</button>
-                <button class="btn btn-sm btn-danger">Eliminar</button>
-              </div>
-            </div>
-          </div>
+      <div class="card mb-4">
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            {% for producto in productos %}
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-md-8">
+                    <strong>Nombre:</strong> {{ producto.nombre }}<br>
+                    <strong>Precio:</strong> ${{ producto.precio }}<br>
+                    <strong>Descripción:</strong> {{ producto.descripcion }}<br>
+                  </div>
+                  <div class="col-md-4 text-end">
+                    <a href="{% url 'producto_del' pk=producto.id %}" class="btn btn-danger btn-sm mt-3">Eliminar</a>
+                  </div>
+                </div>
+              </li>
+            {% empty %}
+              <li class="list-group-item text-center text-muted">
+                No hay productos en tu carrito.
+              </li>
+            {% endfor %}
+          </ul>
         </div>
       </div>
-      <a href="{% url 'catalogo' %}" class="btn btn-outline-primary">
-        <i class="bi bi-arrow-left"></i> Seguir comprando
-      </a>
     </div>
 
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-header bg-dark text-white">Resumen de Compra</div>
-        <div class="card-body">
-          <p>Subtotal: $89.990</p>
-          <p>Envío: $3.000</p>
-          <hr>
-          <h5>Total: $92.990</h5>
+<div class="col-md-4">
+  <div class="card">
+    <div class="card-header bg-dark text-white">Resumen de Compra</div>
+    <div class="card-body">
+      {% if productos %}
+        <p>Subtotal: ${{ subtotal }}</p>
+        <p>Envío: ${{ envio }}</p>
+        <hr>
+        <h5>Total: ${{ total }}</h5>
 
-          <div class="mt-3">
-            <label class="form-label fw-bold">Método de entrega:</label><br>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="entrega" id="retiro" checked>
-              <label class="form-check-label" for="retiro">Retiro en tienda</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="entrega" id="delivery">
-              <label class="form-check-label" for="delivery">Delivery</label>
-            </div>
+        <!-- Método de entrega -->
+        <div class="mt-3">
+          <label class="form-label fw-bold">Método de entrega:</label><br>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="entrega" id="retiro" checked>
+            <label class="form-check-label" for="retiro">Retiro en tienda</label>
           </div>
-
-          <div class="mt-3">
-            <label class="form-label fw-bold">Método de pago:</label>
-            <select class="form-select">
-              <option>Tarjeta de crédito</option>
-              <option>Débito / RedCompra</option>
-              <option>Transferencia</option>
-            </select>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="entrega" id="delivery">
+            <label class="form-check-label" for="delivery">Delivery</label>
           </div>
-
-          <button class="btn btn-success w-100 mt-4">Finalizar compra</button>
         </div>
-      </div>
+
+        <!-- Método de pago -->
+        <div class="mt-3">
+          <label class="form-label fw-bold">Método de pago:</label>
+          <select class="form-select">
+            <option>Tarjeta de crédito</option>
+            <option>Débito / RedCompra</option>
+            <option>Transferencia</option>
+          </select>
+        </div>
+
+        <button class="btn btn-success w-100 mt-4">Finalizar compra</button>
+      {% else %}
+        <p class="text-center text-muted mb-0">Agrega productos para ver el resumen de compra.</p>
+      {% endif %}
     </div>
   </div>
 </div>
+
+
+
+  </div>
+</div>
+
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
