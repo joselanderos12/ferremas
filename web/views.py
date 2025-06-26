@@ -3,13 +3,17 @@ from django.shortcuts import render, redirect,get_object_or_404
 from .models import Producto
 import json
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 27818b7d3ca4dee0a654551f036920ebf1d8e6ca
 # Create your views here.
 
 def home(request): 
     context={}
     return render(request,'web/home.html', context)
 
+<<<<<<< HEAD
 def vendedor(request): 
     context={}
     return render(request,'web/vendedor.html', context)
@@ -31,6 +35,8 @@ def bodeguero(request):
     }
     return render(request, 'web/bodeguero.html', context)
 
+=======
+>>>>>>> 27818b7d3ca4dee0a654551f036920ebf1d8e6ca
 def login(request):
     return render(request, 'web/login.html')
 

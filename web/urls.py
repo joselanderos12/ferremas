@@ -1,7 +1,10 @@
 from django.urls import path
 from . import views
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 27818b7d3ca4dee0a654551f036920ebf1d8e6ca
 urlpatterns =[
     path('', views. home, name='home'),
 
@@ -12,8 +15,11 @@ urlpatterns =[
     path('carrito/', views. carrito, name='carrito'),
     path('producto_del/<str:pk>', views.producto_del, name='producto_del'),
     path('agregar_producto', views.agregar_producto, name='agregar_producto'),
+<<<<<<< HEAD
     path('vendedor/', views. vendedor, name='vendedor'),
     path('contador/', views. contador, name='contador'),
     path('administrador/', views. administrador, name='administrador'),
     path('bodeguero/', views. bodeguero, name='bodeguero'),
+=======
+>>>>>>> 27818b7d3ca4dee0a654551f036920ebf1d8e6ca
 ]
